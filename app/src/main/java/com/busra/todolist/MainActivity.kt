@@ -12,18 +12,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.busra.todolist.screens.TaskList
+import com.busra.todolist.roomdb.AppDatabase
+import com.busra.todolist.roomdb.TaskRepository
+import com.busra.todolist.screens.TaskListScreen
 import com.busra.todolist.ui.theme.ToDoListTheme
+import com.busra.todolist.viewmodel.TaskViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // ViewModel ve Repository kurulumu
+        val database = AppDatabase.getDatabase(this)
+        val repository = TaskRepository(database.taskDao())
+        val viewModel = TaskViewModel(repository)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ToDoListTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        TaskList()
+                        TaskListScreen(viewModel = viewModel)
                     }
                 }
             }
