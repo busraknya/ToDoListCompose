@@ -36,4 +36,11 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
             repository.updateTask(task)
         }
     }
+
+    fun updateTaskCompletion(task: Task, isCompleted: Boolean) {
+        viewModelScope.launch {
+            val updatedTask = task.copy(isCompleted = isCompleted) // isCompleted alanını güncelle
+            repository.updateTask(updatedTask) // Güncellenmiş task'ı gönder
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.busra.todolist.screens
 
+import android.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.busra.todolist.model.Task
 import com.busra.todolist.viewmodel.TaskViewModel
@@ -59,7 +62,6 @@ fun TaskListScreen(viewModel: TaskViewModel) {
             items(tasks) { task ->
                 TaskItem(
                     task = task,
-                    onEditClick = {},
                     onDeleteClick = {
                         taskToDelete = task
                         showDeleteDialog = true
@@ -106,43 +108,55 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 @Composable
 fun TaskItem(
     task: Task,
-    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCheckChange: (Boolean) -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(16.dp)
         ) {
-            Column {
+            // Sol tarafta checkbox
+            Checkbox(
+                checked = task.isCompleted,
+                onCheckedChange = { checked ->
+                    onCheckChange(checked)  // Checkbox işaretlendiğinde değişiklikleri yansıt
+                }
+            )
+
+            // Başlık ve açıklama text'leri alt alta, açıklama kelime sınırıyla
+            Column(
+                modifier = Modifier
+                    .weight(1f)  // Sağdaki silme butonunun yerini etkilememek için
+                    .padding(start = 8.dp)
+            ) {
                 Text(text = task.title, style = MaterialTheme.typography.headlineMedium)
+
+                // Description text, kelime sınırı ve taşma ayarları
                 if (!task.description.isNullOrEmpty()) {
-                    Text(text = task.description.orEmpty(), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = task.description.orEmpty(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 2,  // İki satıra kadar göster
+                        overflow = TextOverflow.Ellipsis  // Taşarsa '...' ekle
+                    )
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = task.isCompleted,
-                    onCheckedChange = onCheckChange
-                )
-                IconButton(onClick = onEditClick) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit Task")
-                }
-                IconButton(onClick = onDeleteClick) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete Task")
-                }
+
+            // Sağdaki silme butonu
+            IconButton(onClick = onDeleteClick) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete Task")
             }
         }
     }
 }
+
 
 @Composable
 fun showTaskDialog(
@@ -155,29 +169,29 @@ fun showTaskDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text(text = "Add New Task") },
+        title = { Text(text = "Yeni Bir Görev Ekle") },
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { onTitleChange(it) },
-                    label = { Text("Title") }
+                    label = { Text("Başlık") }
                 )
                 OutlinedTextField(
                     value = description.orEmpty(),
                     onValueChange = { onDescriptionChange(it) },
-                    label = { Text("Description") }
+                    label = { Text("Açıklama") }
                 )
             }
         },
         confirmButton = {
             Button(onClick = onAddTask) {
-                Text("Add Task")
+                Text("Görevi Ekle")
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancel")
+                Text("İptal Et")
             }
         }
     )
