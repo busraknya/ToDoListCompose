@@ -20,7 +20,6 @@ import com.busra.todolist.viewmodel.TaskViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // ViewModel ve Repository kurulumu
         val database = AppDatabase.getDatabase(this)
         val repository = TaskRepository(database.taskDao())
         val viewModel = TaskViewModel(repository)
