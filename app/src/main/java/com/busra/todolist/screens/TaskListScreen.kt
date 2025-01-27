@@ -65,9 +65,6 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     onDeleteClick = {
                         taskToDelete = task
                         showDeleteDialog = true
-                    },
-                    onCheckChange = { isChecked ->
-                        viewModel.updateTaskCompletion(task.copy(isCompleted = isChecked))
                     }
                 )
             }
@@ -108,8 +105,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 @Composable
 fun TaskItem(
     task: Task,
-    onDeleteClick: () -> Unit,
-    onCheckChange: (Boolean) -> Unit
+    onDeleteClick: () -> Unit
 ) {
 
     Card(
@@ -122,14 +118,6 @@ fun TaskItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(16.dp)
         ) {
-            // Sol tarafta checkbox
-            Checkbox(
-                checked = task.isCompleted,
-                onCheckedChange = { checked ->
-                    onCheckChange(checked)  // Checkbox işaretlendiğinde değişiklikleri yansıt
-                }
-            )
-
             // Başlık ve açıklama text'leri alt alta, açıklama kelime sınırıyla
             Column(
                 modifier = Modifier
@@ -156,7 +144,6 @@ fun TaskItem(
         }
     }
 }
-
 
 @Composable
 fun showTaskDialog(
@@ -201,7 +188,7 @@ fun showTaskDialog(
 fun DeleteTaskDialog(onConfirmDelete: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Görev Silme İşlemi") },
+        title = { Text("Görev Sil") },
         text = { Text("Görevi silmek istiyor musunuz?") },
         confirmButton = {
             Button(onClick = onConfirmDelete) {
@@ -210,8 +197,7 @@ fun DeleteTaskDialog(onConfirmDelete: () -> Unit, onDismiss: () -> Unit) {
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Hayır")
-            }
+                Text("Hayır") }
         }
     )
 }

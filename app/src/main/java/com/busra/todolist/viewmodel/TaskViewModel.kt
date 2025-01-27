@@ -1,5 +1,6 @@
 package com.busra.todolist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.busra.todolist.model.Task
@@ -30,17 +31,5 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
             repository.deleteTask(task) // Task silme
         }
     }
-
-    fun updateTaskCompletion(task: Task) {
-        viewModelScope.launch {
-            repository.updateTask(task)
-        }
-    }
-
-    fun updateTaskCompletion(task: Task, isCompleted: Boolean) {
-        viewModelScope.launch {
-            val updatedTask = task.copy(isCompleted = isCompleted) // isCompleted alanını güncelle
-            repository.updateTask(updatedTask) // Güncellenmiş task'ı gönder
-        }
-    }
 }
+

@@ -10,10 +10,7 @@ data class Task(
     var title: String,
 
     @ColumnInfo(name = "description")
-    var description: String?,
-
-    @ColumnInfo(name = "is_completed")
-    var isCompleted: Boolean = false,
+    var description: String?
 
 ) {
     @PrimaryKey(autoGenerate = true)
